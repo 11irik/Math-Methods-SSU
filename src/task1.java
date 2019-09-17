@@ -3,7 +3,7 @@ public class task1 {
         int v1 = 1;
         int v2 = 2;
         double eps = 0.1;
-        int r = 2;
+        int r = 5;
 
         for(int i = -r; i <= r; ++i){
             double s1 = v1 * i;
