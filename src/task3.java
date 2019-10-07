@@ -6,11 +6,7 @@ public class task3 {
         Scanner in = new Scanner(System.in);
 
         int[] nods = {1, 2, 3, 4};
-
         int[] funcs = {1, 8, 27, 64};
-
-        String nodesString = Arrays.toString(nods);
-        System.out.println(nodesString);
 
         for (int i = 0; i < nods.length; ++i){
 
