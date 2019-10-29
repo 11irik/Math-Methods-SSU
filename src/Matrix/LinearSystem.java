@@ -25,25 +25,23 @@ public class LinearSystem {
     }
 
     public LinearSystem(double[][] array, double[] column) {
+        if (array.length != column.length) {
+            throw new IllegalArgumentException();
+        }
         this.matrix = new Matrix(array);
         this.column = Arrays.copyOf(column, column.length);
-
     }
 
     private void swapLines(int l, int j) {
-            //todo exception
-            matrix.swapRows(l, j);
-            double tempX = column[l];
-            column[l] = column[j];
-            column[j] = tempX;
+        //todo exception
+        matrix.swapRows(l, j);
+        double tempX = column[l];
+        column[l] = column[j];
+        column[j] = tempX;
     }
 
-//    private void swapColumns(int k, int l) {
-//
-//    }
-
-
     private void multiplyLine(int lineNumber, double k) {
+        //todo exception
         matrix.multiplyRow(lineNumber, k);
         column[lineNumber] *= k;
     }
@@ -60,70 +58,62 @@ public class LinearSystem {
         column[sumLineNumber] += column[termLineNumber] * k;
     }
 
-    private int selectMainItemLineNumber(int lineNumber, int columnNumber) {
-        return matrix.selectMainItem(lineNumber, columnNumber);
-    }
-
-    private double diagonalize() {
+    private double diagonalize() {          //also return determinant
         int count = 0;
         double determinant = 1;
 
         for (int i = 0; i < matrix.getRowsCount(); ++i) {
-            if (matrix.checkZero(i, i)){
-                count++;
-                int number = selectMainItemLineNumber(i, i);
+            if (matrix.checkZero(i, i)) {
+                int number = matrix.selectMainItem(i, i);
                 if (number == -1) {
                     break;
                     //TODO
+                } else {
+                    swapLines(number, i);
                 }
-                else {
-                    matrix.swapRows(number, i);
-                }
+                count++;
             }
 
             determinant *= matrix.getValue(i, i);
             multiplyLine(i, 1 / matrix.getValue(i, i));
-            for (int j = i+1; j < matrix.rowsCount; ++j) {
+            for (int j = i + 1; j < matrix.getRowsCount(); ++j) {
                 multiplyAndSumLines(j, i, -matrix.getValue(j, i));
             }
         }
-        //System.out.println(determinant * Math.pow(-1, count));
+
         return determinant * Math.pow(-1, count);
     }
 
-    double[] gaussian() {
-        diagonalize();
+    public double[] gaussianElimination() {
+        LinearSystem tempSystem = new LinearSystem(this);
+        tempSystem.diagonalize();
 
-        double[] x = new double[matrix.rowsCount];
-        for (int i = 0; i < x.length; ++i) {
-            x[i] = 0;
-        }
-        x[x.length -1] = column[x.length -1];
+        double[] x = new double[tempSystem.matrix.getRowsCount()];
+        Arrays.fill(x, 0);
+        x[x.length - 1] = tempSystem.column[x.length - 1];
 
-        for (int i = x.length -2; i >= 0; --i) {
+        for (int i = x.length - 2; i >= 0; --i) {
             double sum = 0;
-            for (int j = x.length-1; j > i; --j) {
-                sum += matrix.getValue(i, j) * x[j];
+            for (int j = x.length - 1; j > i; --j) {
+                sum += tempSystem.matrix.getValue(i, j) * x[j];
             }
-            x[i] = (column[i] - sum);
+            x[i] = (tempSystem.column[i] - sum);
         }
 
         return x;
     }
 
     public Matrix getReverse() {
-        Matrix reversedMatrix = new Matrix(matrix.rowsCount, matrix.columnsCount);
-        for (int i = 0; i < reversedMatrix.rowsCount; ++i) {
+        Matrix reversedMatrix = new Matrix(matrix.getRowsCount(), matrix.getColumnsCount());
+        for (int i = 0; i < reversedMatrix.getRowsCount(); ++i) {
             LinearSystem temp = new LinearSystem(this);
-            double[] unitColumn = new double[reversedMatrix.rowsCount];
-            for (int j = 0; j < unitColumn.length; ++j) {
-                unitColumn[j] = 0;
-            }
+            double[] unitColumn = new double[reversedMatrix.getRowsCount()];
+            Arrays.fill(unitColumn, 0);
             unitColumn[i] = 1;
             temp.column = unitColumn;
-            double[] iColumn = temp.gaussian();
-            for (int j = 0; j < reversedMatrix.columnsCount; ++j) {
-                reversedMatrix.setValue(j,i,iColumn[j]);
+            double[] iColumn = temp.gaussianElimination();
+            for (int j = 0; j < reversedMatrix.getColumnsCount(); ++j) {
+                reversedMatrix.setValue(j, i, iColumn[j]);
             }
         }
         return reversedMatrix;
@@ -132,8 +122,8 @@ public class LinearSystem {
     @Override
     public String toString() {
         StringBuilder temp = new StringBuilder();
-        for (int i = 0; i < matrix.rowsCount; ++i) {
-            for (int j = 0; j < matrix.columnsCount; ++j) {
+        for (int i = 0; i < matrix.getRowsCount(); ++i) {
+            for (int j = 0; j < matrix.getColumnsCount(); ++j) {
                 temp.append(matrix.getValue(i, j)).append(" ");
             }
             temp.append("\t").append(column[i]);
