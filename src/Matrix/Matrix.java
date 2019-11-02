@@ -90,7 +90,8 @@ public class Matrix {
     }
 
     boolean checkZero(int rowNumber, int columnNumber) {
-        return (array[rowNumber][columnNumber] == 0.0);
+        double eps = 0.0000001;
+        return (Math.abs(array[rowNumber][columnNumber]) <= eps);
     }
 
     double getValue(int rowNumber, int columnNumber) {

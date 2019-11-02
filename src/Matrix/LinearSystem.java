@@ -5,10 +5,12 @@ import java.util.Arrays;
 public class LinearSystem {
     private Matrix matrix;
     private double[] column;
+    private int size;
 
     public LinearSystem(int a, int b) {
         this.matrix = new Matrix(a, b);
         this.column = new double[a];
+        this.size = a;
         this.matrix.setZeroes();
         for (int i = 0; i < a; i++) {
             this.column[i] = 0;
@@ -18,6 +20,7 @@ public class LinearSystem {
     public LinearSystem(LinearSystem linearSystem) {
         this.matrix = new Matrix(linearSystem.matrix);
         this.column = new double[matrix.getRowsCount()];
+        this.size = linearSystem.size;
 
         for (int i = 0; i < column.length; i++) {
             this.column[i] = linearSystem.column[i];
@@ -30,6 +33,7 @@ public class LinearSystem {
         }
         this.matrix = new Matrix(array);
         this.column = Arrays.copyOf(column, column.length);
+        this.size = array.length;
     }
 
     private void swapLines(int l, int j) {
@@ -47,13 +51,13 @@ public class LinearSystem {
     }
 
     private void sumLines(int sumLineNumber, int termLineNumber) {
-        //TODO exception
+        //todo exception
         matrix.sumRows(sumLineNumber, termLineNumber);
         column[sumLineNumber] += column[termLineNumber];
     }
 
     private void multiplyAndSumLines(int sumLineNumber, int termLineNumber, double k) {
-        //TODO exception
+        //todo exception
         matrix.multiplyAndSumRows(sumLineNumber, termLineNumber, k);
         column[sumLineNumber] += column[termLineNumber] * k;
     }
@@ -67,14 +71,17 @@ public class LinearSystem {
                 int number = matrix.selectMainItem(i, i);
                 if (number == -1) {
                     break;
-                    //TODO
+                    //todo
                 } else {
                     swapLines(number, i);
                 }
                 count++;
             }
 
-            determinant *= matrix.getValue(i, i);
+//            System.out.printf("Main: %f\n", matrix.getValue(i, i));
+//            determinant *= matrix.getValue(i, i);
+//            System.out.printf("Det: %f\n", determinant);
+
             multiplyLine(i, 1 / matrix.getValue(i, i));
             for (int j = i + 1; j < matrix.getRowsCount(); ++j) {
                 multiplyAndSumLines(j, i, -matrix.getValue(j, i));
@@ -118,6 +125,37 @@ public class LinearSystem {
         }
         return reversedMatrix;
     }
+
+    public void directSweep() {
+        double[] pS = new double[size-1];
+        double[] qS = new double[size];
+
+        pS[0] = matrix.getValue(0, 1) / matrix.getValue(0, 0) / -1;
+        qS[0] = column[0] / matrix.getValue(0, 0);
+
+        for (int i = 1; i < size-1; ++i) {
+            pS[i] = matrix.getValue(i, i+1) /
+                    (-1 * matrix.getValue(i, i) - matrix.getValue(i, i-1) * pS[i-1]);
+            qS[i] = (matrix.getValue(i, i-1) * qS[i-1] - column[i]) /
+                    (-1 * matrix.getValue(i, i) - matrix.getValue(i, i-1) * pS[i-1]);
+        }
+
+        qS[column.length-1] = (matrix.getValue(size-1, size-2) * qS[size-2] - column[size-1]) /
+                (-1 * matrix.getValue(size-1, size-1) - matrix.getValue(size-1, size-2) * pS[size-2]);
+
+//        System.out.println(Arrays.toString(pS));
+//        System.out.println(Arrays.toString(qS));
+
+        double[] xS = new double[size];
+        xS[size-1] = qS[size-1];
+        for (int i = size-2; i >= 0; --i) {
+            xS[i] = pS[i] * xS[i+1] + qS[i];
+        }
+
+        System.out.println(Arrays.toString(xS));
+    }
+
+
 
     @Override
     public String toString() {
