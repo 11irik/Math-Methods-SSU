@@ -179,46 +179,54 @@ public class LinearSystem {
         return linearSystem;
     }
 
-    private static double max(double[] x)
+    private static double qqmax(double[] x)
     {
-        double norma = 0;
+        double norm = 0;
         for (int i = 0 ; i < x.length; i++)
         {
-            norma += x[i] * x[i];
+            norm += x[i] * x[i];
         }
-        return Math.sqrt(norma);
+        return Math.sqrt(norm);
     }
 
     public double[] fixedPointIteration() {
         LinearSystem linearSystem = this.getRepresentation();
-
         double[] xFirsts = new double[size];
         double[] xSeconds = new double[size];
+        double[] w = new double[size];
 
-        double norm;
-        double eps = 0.0001;
+
+        double eps;
+        double ppp = 0.00000001;
+        int k = 0;
         do {
-            double[] xs = new double[linearSystem.size];
             for (int i = 0; i < size; ++i) {
+                xFirsts[i] = xSeconds[i];
+            }
+
+            for (int i = 0; i < size; ++i) {
+                double sum = 0;
                 for (int j = 0; j < size; ++j) {
-                    xs[i] += linearSystem.matrix.getValue(i, j) * xFirsts[j];
+                    if (i != j) {
+                        sum += linearSystem.matrix.getValue(i, j) * xFirsts[j];
+                    }
                 }
+                xSeconds[i] = linearSystem.column[i] + sum;
             }
-            for (int i = 0; i < size; ++i) {
-                xSeconds[i] = xs[i] + linearSystem.column[i];
-            }
-            double[] w = new double[size];
+
             for (int i = 0; i < size; ++i) {
                 w[i] = xSeconds[i] - xFirsts[i];
             }
-            System.out.println(Arrays.toString(xSeconds));
+            eps = qqmax(w);
+            System.out.print("xFst:");
             System.out.println(Arrays.toString(xFirsts));
-            norm = max(w);
-            System.arraycopy(xSeconds, 0, xFirsts, 0, size);
+            System.out.print("xScn:");
+            System.out.println(Arrays.toString(xSeconds));
+            System.out.print("ws:");
+            System.out.println(Arrays.toString(w));
+        } while  (eps > ppp);
 
-        } while  (norm > eps);
-
-        return null;
+        return xSeconds;
     }
 
     @Override
