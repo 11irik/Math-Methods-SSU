@@ -67,19 +67,27 @@ public class Matrix {
         }
     }
 
-    public double[] multiplyRows(int sumRowNumber, double[] row) {
+    private double[] multiplyRows(int multipliedRowNumber, double[] row) {
         //todo exception
-        double[] temp = Arrays.copyOf(array[sumRowNumber], array.length);
+        double[] temp = Arrays.copyOf(array[multipliedRowNumber], array.length);
         for (int i = 0; i < columnsCount; ++i) {
             temp[i] *= row[i];
         }
         return temp;
     }
 
-    private int sumRow(int rowNumber) {
+    private int getRowSum(int rowNumber) {
         int sum = 0;
         for (int i = 0; i < columnsCount; ++i) {
             sum += array[rowNumber][i];
+        }
+        return sum;
+    }
+
+    private static int getRowSum(double[] row) {
+        int sum = 0;
+        for (int i = 0; i < row.length; ++i) {
+            sum += row[i];
         }
         return sum;
     }
@@ -89,6 +97,16 @@ public class Matrix {
         for (int i = 0; i < columnsCount; ++i) {
             array[sumRowNumber][i] += array[termRowNumber][i] * k;
         }
+    }
+
+    public double[] multiplyByColumn(double[] column) {
+        //todo check size compatibility
+        double[] temp = new double[column.length];
+        for (int i = 0; i < rowsCount; ++i) {
+            double[] row = multiplyRows(i, column);
+            temp[i] = Matrix.getRowSum(row);
+        }
+        return temp;
     }
 
     int selectMainItem(int rowNumber, int columnNumber) {

@@ -25,14 +25,9 @@ public class Program {
 //            tempFreeColumn[j] = Integer.parseInt(line[j]);
 //        }
 
-        double[][] tempMatrix = {{-1, 1, 0, 0, 0}, {1, -2, -2, 0, 0}, {0, 2, -1, 1, 0}, {0, 0, 5, -3, -1}, {0, 0, 0, 1, 1}};
-        double[] tempFreeColumn = {-2, 5, -4, 6, -3};
-
-        //todo test
-        LinearSystem linearSystem = new LinearSystem(tempMatrix, tempFreeColumn);
-
-        System.out.println(Arrays.toString(linearSystem.gaussianElimination()));
-
-        System.out.println(Arrays.toString(linearSystem.directSweep()));
+        double[][] arr = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+        double[] col = {2, 3, 4};
+        Matrix m = new Matrix(arr);
+        System.out.println(Arrays.toString(m.multiplyByColumn(col)));
     }
 }

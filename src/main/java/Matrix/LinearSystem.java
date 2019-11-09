@@ -28,12 +28,20 @@ public class LinearSystem {
     }
 
     public LinearSystem(double[][] array, double[] column) {
+        //todo size exception
         if (array.length != column.length) {
             throw new IllegalArgumentException();
         }
         this.matrix = new Matrix(array);
         this.column = Arrays.copyOf(column, column.length);
         this.size = array.length;
+    }
+
+    public LinearSystem(Matrix matrix, double[] column, int size) {
+        //todo size exception
+        this.matrix = new Matrix(matrix);
+        this.column = Arrays.copyOf(column, column.length);
+        this.size = size;
     }
 
     public Matrix getMatrix() {
@@ -74,6 +82,7 @@ public class LinearSystem {
         column[sumLineNumber] += column[termLineNumber] * k;
     }
 
+    //paragraph 1
     private double diagonalize() {          //also returns determinant
         int count = 0;
         double determinant = 1;
@@ -117,6 +126,7 @@ public class LinearSystem {
         return x;
     }
 
+    //paragraph 2
     public Matrix getInverse() {
         Matrix reversedMatrix = new Matrix(matrix.getRowsCount(), matrix.getColumnsCount());
         for (int i = 0; i < reversedMatrix.getRowsCount(); ++i) {
@@ -133,27 +143,78 @@ public class LinearSystem {
         return reversedMatrix;
     }
 
-    public double[] directSweep() {
-        double[] pS = new double[size-1];
-        double[] qS = new double[size];
+    //paragraph 3
+    public double[] tridiagonalAlgorithm() {
+        //todo size exception
+        double[] ps = new double[size-1];
+        double[] qs = new double[size];
 
-        pS[0] = matrix.getValue(0, 1) / matrix.getValue(0, 0) / -1;
-        qS[0] = column[0] / matrix.getValue(0, 0);
+        ps[0] = matrix.getValue(0, 1) / matrix.getValue(0, 0) / -1;
+        qs[0] = column[0] / matrix.getValue(0, 0);
         for (int i = 1; i < size-1; ++i) {
-            pS[i] = matrix.getValue(i, i+1) /
-                    (-1 * matrix.getValue(i, i) - matrix.getValue(i, i-1) * pS[i-1]);
-            qS[i] = (matrix.getValue(i, i-1) * qS[i-1] - column[i]) /
-                    (-1 * matrix.getValue(i, i) - matrix.getValue(i, i-1) * pS[i-1]);
+            ps[i] = matrix.getValue(i, i+1) /
+                    (-1 * matrix.getValue(i, i) - matrix.getValue(i, i-1) * ps[i-1]);
+            qs[i] = (matrix.getValue(i, i-1) * qs[i-1] - column[i]) /
+                    (-1 * matrix.getValue(i, i) - matrix.getValue(i, i-1) * ps[i-1]);
         }
-        qS[column.length-1] = (matrix.getValue(size-1, size-2) * qS[size-2] - column[size-1]) /
-                (-1 * matrix.getValue(size-1, size-1) - matrix.getValue(size-1, size-2) * pS[size-2]);
+        qs[size-1] = (matrix.getValue(size-1, size-2) * qs[size-2] - column[size-1]) /
+                (-1 * matrix.getValue(size-1, size-1) - matrix.getValue(size-1, size-2) * ps[size-2]);
 
-        double[] xS = new double[size];
-        xS[size-1] = qS[size-1];
+        double[] xs = new double[size];
+        xs[size-1] = qs[size-1];
         for (int i = size-2; i >= 0; --i) {
-            xS[i] = pS[i] * xS[i+1] + qS[i];
+            xs[i] = ps[i] * xs[i+1] + qs[i];
         }
-        return xS;
+        return xs;
+    }
+
+    //paragraph 4
+    public LinearSystem getRepresentation() {
+        LinearSystem linearSystem = new LinearSystem(this);
+
+        for (int i = 0; i < linearSystem.size; ++i) {
+            linearSystem.multiplyLine(i, linearSystem.matrix.getValue(i, i));
+            linearSystem.matrix.setValue(i, i, 0);
+        }
+        return linearSystem;
+    }
+
+    public static double max(double[] x)
+    {
+        double norma = 0;
+        for (int i = 0 ; i < x.length; i++)
+        {
+            norma += x[i] * x[i];
+        }
+        return Math.sqrt(norma);
+    }
+
+    public void fixedPointIteration() {
+        LinearSystem linearSystem = this.getRepresentation();
+        double norm = 1;
+        double eps = 0.000001;
+
+        double[] x_ks = new double[size];
+        double[] x_k1s = new double[size];
+        while (norm > eps) {
+            double[] xs = new double[linearSystem.size];
+            for (int i = 0; i < size; ++i) {
+                for (int j = 0; j < size; ++j) {
+                    xs[i] += linearSystem.matrix.getValue(i, j) * x_ks[j];
+                }
+            }
+            for (int i = 0; i < size; ++i) {
+                x_k1s[i] = xs[i] + linearSystem.column[i];
+            }
+            double[] w = new double[size];
+            for (int i = 0; i < size; ++i) {
+                w[i] = x_k1s[i] - x_ks[i];
+            }
+            System.out.println(Arrays.toString(x_k1s));
+            System.out.println(Arrays.toString(x_ks));
+            norm = max(w);
+            System.arraycopy(x_k1s, 0, x_ks, 0, size);
+        }
     }
 
     @Override
