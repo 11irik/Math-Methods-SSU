@@ -25,9 +25,5 @@ public class Program {
 //            tempFreeColumn[j] = Integer.parseInt(line[j]);
 //        }
 
-        double[][] arr = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-        double[] col = {2, 3, 4};
-        Matrix m = new Matrix(arr);
-        System.out.println(Arrays.toString(m.multiplyByColumn(col)));
     }
 }

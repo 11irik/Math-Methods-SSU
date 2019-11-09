@@ -84,8 +84,8 @@ public class Matrix {
         return sum;
     }
 
-    private static int getRowSum(double[] row) {
-        int sum = 0;
+    private static double getRowSum(double[] row) {
+        double sum = 0;
         for (int i = 0; i < row.length; ++i) {
             sum += row[i];
         }

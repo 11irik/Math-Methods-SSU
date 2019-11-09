@@ -169,17 +169,17 @@ public class LinearSystem {
     }
 
     //paragraph 4
-    public LinearSystem getRepresentation() {
+    private LinearSystem getRepresentation() {
         LinearSystem linearSystem = new LinearSystem(this);
 
         for (int i = 0; i < linearSystem.size; ++i) {
-            linearSystem.multiplyLine(i, linearSystem.matrix.getValue(i, i));
+            linearSystem.multiplyLine(i, 1/linearSystem.matrix.getValue(i, i));
             linearSystem.matrix.setValue(i, i, 0);
         }
         return linearSystem;
     }
 
-    public static double max(double[] x)
+    private static double max(double[] x)
     {
         double norma = 0;
         for (int i = 0 ; i < x.length; i++)
@@ -189,32 +189,36 @@ public class LinearSystem {
         return Math.sqrt(norma);
     }
 
-    public void fixedPointIteration() {
+    public double[] fixedPointIteration() {
         LinearSystem linearSystem = this.getRepresentation();
-        double norm = 1;
-        double eps = 0.000001;
 
-        double[] x_ks = new double[size];
-        double[] x_k1s = new double[size];
-        while (norm > eps) {
+        double[] xFirsts = new double[size];
+        double[] xSeconds = new double[size];
+
+        double norm;
+        double eps = 0.0001;
+        do {
             double[] xs = new double[linearSystem.size];
             for (int i = 0; i < size; ++i) {
                 for (int j = 0; j < size; ++j) {
-                    xs[i] += linearSystem.matrix.getValue(i, j) * x_ks[j];
+                    xs[i] += linearSystem.matrix.getValue(i, j) * xFirsts[j];
                 }
             }
             for (int i = 0; i < size; ++i) {
-                x_k1s[i] = xs[i] + linearSystem.column[i];
+                xSeconds[i] = xs[i] + linearSystem.column[i];
             }
             double[] w = new double[size];
             for (int i = 0; i < size; ++i) {
-                w[i] = x_k1s[i] - x_ks[i];
+                w[i] = xSeconds[i] - xFirsts[i];
             }
-            System.out.println(Arrays.toString(x_k1s));
-            System.out.println(Arrays.toString(x_ks));
+            System.out.println(Arrays.toString(xSeconds));
+            System.out.println(Arrays.toString(xFirsts));
             norm = max(w);
-            System.arraycopy(x_k1s, 0, x_ks, 0, size);
-        }
+            System.arraycopy(xSeconds, 0, xFirsts, 0, size);
+
+        } while  (norm > eps);
+
+        return null;
     }
 
     @Override
