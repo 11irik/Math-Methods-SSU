@@ -1,4 +1,4 @@
-package Matrix;
+package linearSystem;
 
 public class Pair {
     float left;

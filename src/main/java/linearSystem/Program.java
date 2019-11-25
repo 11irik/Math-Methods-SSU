@@ -1,6 +1,4 @@
-package Matrix;
-
-import java.util.Arrays;
+package linearSystem;
 
 public class Program {
     public static void main(String[] args) {

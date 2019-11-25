@@ -1,4 +1,4 @@
-package Matrix;
+package linearSystem;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 @RunWith(Parameterized.class)
 public class LinearSystemTest {
-    LinearSystem linearSystem;
+    private LinearSystem linearSystem;
 
     public LinearSystemTest(LinearSystem linearSystem) {
         this.linearSystem = linearSystem;

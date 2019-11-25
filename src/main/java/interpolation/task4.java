@@ -1,4 +1,4 @@
-package Interpolation;
+package interpolation;
 
 import java.util.ArrayList;
 import java.util.Arrays;

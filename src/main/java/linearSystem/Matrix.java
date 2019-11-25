@@ -1,4 +1,4 @@
-package Matrix;
+package linearSystem;
 
 import java.util.Arrays;
 

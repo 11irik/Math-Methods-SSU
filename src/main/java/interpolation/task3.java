@@ -1,6 +1,5 @@
-package Interpolation;
+package interpolation;
 
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class task3 {
