@@ -169,41 +169,40 @@ public class LinearSystem {
     }
 
     //paragraph 4
-    private LinearSystem getRepresentation() {
+    public LinearSystem getRepresentation() {
         LinearSystem linearSystem = new LinearSystem(this);
 
         for (int i = 0; i < linearSystem.size; ++i) {
-            linearSystem.multiplyLine(i, 1/linearSystem.matrix.getValue(i, i));
+            linearSystem.multiplyLine(i, -1/linearSystem.matrix.getValue(i, i));
             linearSystem.matrix.setValue(i, i, 0);
+            linearSystem.column[i] *= -1;
         }
         return linearSystem;
     }
 
-    private static double qqmax(double[] x)
+    private static double getMaxFromVector(double[] x)
     {
-        double norm = 0;
+        double max = 0;
         for (int i = 0 ; i < x.length; i++)
         {
-            norm += x[i] * x[i];
+            if (max < Math.abs(x[i])) {
+                max = Math.abs(x[i]);
+            }
         }
-        return Math.sqrt(norm);
+        return max;
     }
 
-    public double[] fixedPointIteration() {
+    public double[] fixedPointIteration(double eps) {
         LinearSystem linearSystem = this.getRepresentation();
         double[] xFirsts = new double[size];
         double[] xSeconds = new double[size];
         double[] w = new double[size];
 
-
-        double eps;
-        double ppp = 0.00000001;
-        int k = 0;
+        double maxVectorCoord;
         do {
             for (int i = 0; i < size; ++i) {
                 xFirsts[i] = xSeconds[i];
             }
-
             for (int i = 0; i < size; ++i) {
                 double sum = 0;
                 for (int j = 0; j < size; ++j) {
@@ -217,14 +216,8 @@ public class LinearSystem {
             for (int i = 0; i < size; ++i) {
                 w[i] = xSeconds[i] - xFirsts[i];
             }
-            eps = qqmax(w);
-            System.out.print("xFst:");
-            System.out.println(Arrays.toString(xFirsts));
-            System.out.print("xScn:");
-            System.out.println(Arrays.toString(xSeconds));
-            System.out.print("ws:");
-            System.out.println(Arrays.toString(w));
-        } while  (eps > ppp);
+            maxVectorCoord = getMaxFromVector(w);
+        } while  (maxVectorCoord > eps);
 
         return xSeconds;
     }

@@ -30,21 +30,29 @@ public class LinearSystemTest {
 //                            },
 //                            new double[] {-2, 5, -4, 6, -3}
 //                        ),
-//                        new LinearSystem(
-//                                new double[][] {
-//                                        {10, 2, -1},
-//                                        {-2, -6, -1},
-//                                        {1, -3, 12},
-//                                },
-//                                new double[] {11, -7, 10}
-//                        ),
                         new LinearSystem(
                                 new double[][] {
-                                        {10, 2},
-                                        {-2, -6}
+                                        {10, 2, -1},
+                                        {-2, -6, -1},
+                                        {1, -3, 12},
                                 },
-                                new double[] {11, -7}
-                        )
+                                new double[] {11, -7, 10}
+                        ),
+//                        new LinearSystem(
+//                                new double[][] {
+//                                        {10, 2},
+//                                        {-2, -6}
+//                                },
+//                                new double[] {11, -7}
+//                        ),
+//                        new LinearSystem(
+//                                new double[][] {
+//                                        {4, -1, -1},
+//                                        {1, 5, -2},
+//                                        {1, 1, 4}
+//                                        },
+//                                new double[]{2, 4, 6}
+//                                )
                 }
         });
     }
@@ -77,10 +85,7 @@ public class LinearSystemTest {
 
     @Test
     public void fixedPointIteration() {
-        double[] xs = linearSystem.fixedPointIteration();
-        //0.9285, 0.85714
-
-
+        double[] xs = linearSystem.fixedPointIteration(0.00000001);
         double[] actual = linearSystem.getMatrix().multiplyByColumn(xs);
         double[] expected = linearSystem.getColumn();
 
