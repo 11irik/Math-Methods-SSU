@@ -5,41 +5,37 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class DifferentialEquation {
+public class Cauchy {
     double[] xs;
-    Equation equation;
-    double y0;
+    double v = 1;
+    double y0 = 2;
 
-    public DifferentialEquation(String equation, double y0, double[] xs) {
-        this.equation = new Equation(equation);
-        this.y0 = y0;
+    public Cauchy(double[] xs) {
         this.xs = Arrays.copyOf(xs, xs.length);
-    }
-
-    private double euler(double y, double x1, double x2) {
-        return y + (x2 - x1) * (equation.count(x1) - y);
     }
 
     public ArrayList<Double> methodEuler() {
         ArrayList<Double> list = new ArrayList<>();
         list.add(y0);
         for (int i = 0; i < xs.length-1; ++i) {
-//            double h = xs[i+1] - xs[i];
-            list.add(euler(list.get(i), xs[i], xs[i+1]));
+            double h = xs[i+1] - xs[i];
+            list.add(list.get(i) + h * Math.pow(xs[i], 3) + (3 + v) * Math.pow(xs[i], 2) + 2 * v * xs[i] - list.get(i));
         }
         return list;
     }
 
-    public ArrayList<Double> methodBetterEuler() {
+    public ArrayList<Double> betterMethodEuler() {
         ArrayList<Double> list = new ArrayList<>();
         list.add(y0);
         for (int i = 0; i < xs.length-1; ++i) {
             double h = xs[i+1] - xs[i];
-            list.add( list.get(i) + h * ( equation.count((xs[i] + xs[i+1])/2)) - (list.get(i) + h/2 * ( equation.count(xs[i]) - list.get(i))) );
+            double temp = list.get(i) + h/2 * Math.pow(xs[i], 3) + (3 + v) * Math.pow(xs[i], 2) + 2 * v * xs[i] - list.get(i);
+            list.add( list.get(i) + h * (Math.pow( (xs[i] + xs[i+1]) / 2, 3 ) + (3 + v) * Math.pow( (xs[i] + xs[i+1]) / 2, 2 ) + 2 * v * (xs[i] + xs[i+1]) / 2 - temp));
         }
         return list;
     }
 
+    //fixme
     public ArrayList<Double> predictorCorrector() {
         ArrayList<Double> euler = methodEuler();
         ArrayList<Double> list = new ArrayList<>();
@@ -47,7 +43,7 @@ public class DifferentialEquation {
 
         for (int i = 0; i < xs.length-1; ++i) {
             double h = xs[i+1] - xs[i];
-            list.add( list.get(i) + h/2 * ( equation.count(xs[i]) - list.get (i) + equation.count(xs[i+1]) - euler.get(i)));
+            list.add( list.get(i) + h/2 * (Math.pow(xs[i], 3) + (3 + v) * Math.pow(xs[i], 2) + 2 * v * xs[i] - list.get(i) + Math.pow(xs[i+1], 3) + (3 + v) * Math.pow(xs[i+1], 2) + 2 * v * xs[i+1] - euler.get(i)));
         }
 
         return list;

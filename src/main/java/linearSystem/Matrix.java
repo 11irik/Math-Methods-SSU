@@ -7,13 +7,13 @@ public class Matrix {
     private int columnsCount;
     private double[][] array;
 
-    Matrix(int rowCount, int columnCount) {
+    public Matrix(int rowCount, int columnCount) {
         this.rowsCount = rowCount;
         this.columnsCount = columnCount;
         array = new double[rowCount][columnCount];
     }
 
-    Matrix(double[][] array) {
+    public Matrix(double[][] array) {
         rowsCount = array.length;
         columnsCount = array[0].length;
         this.array = new double[rowsCount][columnsCount];
@@ -22,7 +22,20 @@ public class Matrix {
         }
     }
 
-    Matrix(Matrix matrix) {
+    public Matrix(double[] a, double[] b, double[] c) {
+        rowsCount = b.length;
+        columnsCount = b.length;
+        array = new double[rowsCount][columnsCount];
+        setZeroes();
+        for (int i = 0; i < rowsCount - 1; ++i) {
+            array[i][i] = b[i];
+            array[i+1][i] = a[i];
+            array[i][i+1] = c[i];
+        }
+        array[rowsCount-1][rowsCount-1] = b[rowsCount - 1];
+    }
+
+    public Matrix(Matrix matrix) {
         rowsCount = matrix.rowsCount;
         columnsCount = matrix.columnsCount;
         this.array = new double[rowsCount][columnsCount];
@@ -31,21 +44,23 @@ public class Matrix {
         }
     }
 
-    int getRowsCount() {
+    public int getRowsCount() {
         return rowsCount;
     }
 
-    int getColumnsCount() {
+    public int getColumnsCount() {
         return columnsCount;
     }
 
-    void setZeroes() {
+    public void setZeroes() {
         for (int i = 0; i < rowsCount; i++) {
             for (int j = 0; j < columnsCount; ++j) {
                 array[i][j] = 0;
             }
         }
     }
+
+
 
     void swapRows(int l, int j) {
         //todo exception
