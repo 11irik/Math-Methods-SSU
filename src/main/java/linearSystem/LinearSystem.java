@@ -28,9 +28,8 @@ public class LinearSystem {
     }
 
     public LinearSystem(double[][] array, double[] column) {
-        //todo size exception
         if (array.length != column.length) {
-            throw new IllegalArgumentException();
+            throw new NegativeArraySizeException();
         }
         this.matrix = new Matrix(array);
         this.column = Arrays.copyOf(column, column.length);
@@ -38,7 +37,9 @@ public class LinearSystem {
     }
 
     public LinearSystem(Matrix matrix, double[] column, int size) {
-        //todo size exception
+        if (matrix.getRowsCount() != column.length) {
+            throw new NegativeArraySizeException();
+        }
         this.matrix = new Matrix(matrix);
         this.column = Arrays.copyOf(column, column.length);
         this.size = size;
@@ -57,7 +58,9 @@ public class LinearSystem {
     }
 
     private void swapLines(int l, int j) {
-        //todo exception
+        if (l < 0 || j < 0 || l > size || j > size) {
+            throw new NullPointerException();
+        }
         matrix.swapRows(l, j);
         double tempX = column[l];
         column[l] = column[j];
@@ -65,19 +68,25 @@ public class LinearSystem {
     }
 
     private void multiplyLine(int lineNumber, double k) {
-        //todo exception
+        if (lineNumber < 0 || lineNumber > size - 1) {
+            throw new NullPointerException();
+        }
         matrix.multiplyRow(lineNumber, k);
         column[lineNumber] *= k;
     }
 
     private void sumLines(int sumLineNumber, int termLineNumber) {
-        //todo exception
+        if (sumLineNumber < 0 || sumLineNumber > size - 1 || termLineNumber < 0 || termLineNumber > size - 1) {
+            throw new NullPointerException();
+        }
         matrix.sumRows(sumLineNumber, termLineNumber);
         column[sumLineNumber] += column[termLineNumber];
     }
 
     private void multiplyAndSumLines(int sumLineNumber, int termLineNumber, double k) {
-        //todo exception
+        if (sumLineNumber < 0 || sumLineNumber > size - 1 || termLineNumber < 0 || termLineNumber > size - 1) {
+            throw new NullPointerException();
+        }
         matrix.multiplyAndSumRows(sumLineNumber, termLineNumber, k);
         column[sumLineNumber] += column[termLineNumber] * k;
     }
@@ -92,7 +101,6 @@ public class LinearSystem {
                 int number = matrix.selectMainItem(i, i);
                 if (number == -1) {
                     break;
-                    //todo
                 } else {
                     swapLines(number, i);
                 }
@@ -145,7 +153,7 @@ public class LinearSystem {
 
     //paragraph 3
     public double[] tridiagonalAlgorithm() {
-        //todo size exception
+        //todo exception
         double[] ps = new double[size-1];
         double[] qs = new double[size];
 

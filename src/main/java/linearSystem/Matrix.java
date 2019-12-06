@@ -60,30 +60,38 @@ public class Matrix {
         }
     }
 
-
-
-    void swapRows(int l, int j) {
-        //todo exception
+    public void swapRows(int l, int j) {
+        if (l < 0 || j < 0 || l > rowsCount - 1 || j > rowsCount - 1) {
+            throw new NullPointerException();
+        }
         double[] temp = array[j];
         array[j] = array[l];
         array[l] = temp;
     }
 
-    void multiplyRow(int rowNumber, double k) {
+    public void multiplyRow(int rowNumber, double k) {
+        if (rowNumber < 0 || rowNumber > rowsCount - 1) {
+            throw new NullPointerException();
+        }
+
         for (int i = 0; i < columnsCount; ++i) {
             array[rowNumber][i] *= k;
         }
     }
 
-    void sumRows(int sumRowNumber, int termRowNumber) {
-        //todo exception
+    public void sumRows(int sumRowNumber, int termRowNumber) {
+        if (sumRowNumber < 0 || termRowNumber < 0 || sumRowNumber > rowsCount - 1 || termRowNumber > rowsCount - 1) {
+            throw new NullPointerException();
+        }
         for (int i = 0; i < columnsCount; ++i) {
             array[sumRowNumber][i] += array[termRowNumber][i];
         }
     }
 
-    private double[] multiplyRows(int multipliedRowNumber, double[] row) {
-        //todo exception
+    public double[] multiplyRows(int multipliedRowNumber, double[] row) {
+        if (multipliedRowNumber < 0 || multipliedRowNumber > rowsCount - 1) {
+            throw new NullPointerException();
+        }
         double[] temp = Arrays.copyOf(array[multipliedRowNumber], array.length);
         for (int i = 0; i < columnsCount; ++i) {
             temp[i] *= row[i];
@@ -91,7 +99,11 @@ public class Matrix {
         return temp;
     }
 
-    private int getRowSum(int rowNumber) {
+    public int getRowSum(int rowNumber) {
+        if (rowNumber < 0 || rowNumber > rowsCount - 1) {
+            throw new NullPointerException();
+        }
+
         int sum = 0;
         for (int i = 0; i < columnsCount; ++i) {
             sum += array[rowNumber][i];
@@ -99,7 +111,7 @@ public class Matrix {
         return sum;
     }
 
-    private static double getRowSum(double[] row) {
+    public static double getRowSum(double[] row) {
         double sum = 0;
         for (int i = 0; i < row.length; ++i) {
             sum += row[i];
@@ -107,15 +119,20 @@ public class Matrix {
         return sum;
     }
 
-    void multiplyAndSumRows(int sumRowNumber, int termRowNumber, double k) {
-        //TODO exception
+    public void multiplyAndSumRows(int sumRowNumber, int termRowNumber, double k) {
+        if (sumRowNumber < 0 || termRowNumber < 0 || sumRowNumber > rowsCount - 1 || termRowNumber > rowsCount - 1) {
+            throw new NullPointerException();
+        }
         for (int i = 0; i < columnsCount; ++i) {
             array[sumRowNumber][i] += array[termRowNumber][i] * k;
         }
     }
 
     public double[] multiplyByColumn(double[] column) {
-        //todo check size compatibility
+        //todo change exception type
+        if (column.length != columnsCount) {
+            throw new NegativeArraySizeException();
+        }
         double[] temp = new double[column.length];
         for (int i = 0; i < rowsCount; ++i) {
             double[] row = multiplyRows(i, column);
@@ -124,7 +141,10 @@ public class Matrix {
         return temp;
     }
 
-    int selectMainItem(int rowNumber, int columnNumber) {
+    public int selectMainItem(int rowNumber, int columnNumber) {
+        if (rowNumber < 0 || columnNumber < 0 || rowNumber > rowsCount - 1 || columnNumber > columnsCount - 1) {
+            throw new NullPointerException();
+        }
         double mainItem = Math.abs(array[rowNumber][columnNumber]);
         int mainItemNumber = rowNumber;
         for (int i = rowNumber; i < rowsCount; ++i) {
@@ -141,15 +161,25 @@ public class Matrix {
         }
     }
 
-    boolean checkZero(int rowNumber, int columnNumber) {
+    public boolean checkZero(int rowNumber, int columnNumber) {
+        if (rowNumber < 0 || columnNumber < 0 || rowNumber > rowsCount - 1 || columnNumber > columnsCount - 1) {
+            throw new NullPointerException();
+        }
         double eps = 0.0000001;
         return (Math.abs(array[rowNumber][columnNumber]) <= eps);
     }
 
-    double getValue(int rowNumber, int columnNumber) {
+    public double getValue(int rowNumber, int columnNumber) {
+        if (rowNumber < 0 || columnNumber < 0 || rowNumber > rowsCount - 1 || columnNumber > columnsCount - 1) {
+            throw new NullPointerException();
+        }
         return array[rowNumber][columnNumber];
     }
-    void setValue(int rowNumber, int columnNumber, double element) {
+
+    public void setValue(int rowNumber, int columnNumber, double element) {
+        if (rowNumber < 0 || columnNumber < 0 || rowNumber > rowsCount - 1 || columnNumber > columnsCount - 1) {
+            throw new NullPointerException();
+        }
         array[rowNumber][columnNumber] = element;
     }
 
