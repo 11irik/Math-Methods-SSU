@@ -41,6 +41,9 @@ public class BoundaryValueProblem {
         double[] c = new double[n-1];
         double[] d = Arrays.copyOf(f, f.length);
 
+        System.out.println(Arrays.toString(x));
+        System.out.println(Arrays.toString(yExact));
+
         for (int i = 0; i < n-1; ++i) {
             a[i] = 1 / (h * h) - p[i] / (2 * h);
             b[i] = 2 / (h * h) - q[i];
@@ -52,6 +55,7 @@ public class BoundaryValueProblem {
         Matrix matrix = new Matrix(a, b, c);
         LinearSystem linearSystem = new LinearSystem(matrix, d, d.length);
         double[] y = linearSystem.tridiagonalAlgorithm();
+        System.out.println(Arrays.toString(y));
 
         return y;
     }
@@ -65,6 +69,7 @@ public class BoundaryValueProblem {
     }
 
     private static double f(double x) {
+        //todo fixme
         return Math.pow(x, 6) - 10 * Math.pow(x, 5) + 3 * Math.pow(x, 4) - 20 * Math.pow(x, 3) + 6 * x - 20;
     }
 
