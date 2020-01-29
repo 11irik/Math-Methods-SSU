@@ -7,11 +7,23 @@ import java.util.List;
 
 public class Cauchy {
     double[] xs;
-    double v = 1;
-    double y0 = 2;
+    static double v = 1;
+    static double y0 = 2;
+    ArrayList<Double> expected = new ArrayList<>();
 
     public Cauchy(double[] xs) {
         this.xs = Arrays.copyOf(xs, xs.length);
+        for (double x: xs) {
+            expected.add(x * x * (x + 1));
+        }
+    }
+
+    public ArrayList<Double> getExpected() {
+        return expected;
+    }
+
+    public static double calcEquation(double xk, double yk) {
+        return Math.pow(xk, 3) + (3 + v) * Math.pow(xk, 2) + 2 * v * xk - yk;
     }
 
     public ArrayList<Double> methodEuler() {
@@ -19,7 +31,7 @@ public class Cauchy {
         list.add(y0);
         for (int i = 0; i < xs.length-1; ++i) {
             double h = xs[i+1] - xs[i];
-            list.add(list.get(i) + h * Math.pow(xs[i], 3) + (3 + v) * Math.pow(xs[i], 2) + 2 * v * xs[i] - list.get(i));
+            list.add(list.get(i) + h * calcEquation(xs[i], list.get(i)));
         }
         return list;
     }
@@ -27,15 +39,14 @@ public class Cauchy {
     public ArrayList<Double> betterMethodEuler() {
         ArrayList<Double> list = new ArrayList<>();
         list.add(y0);
+
         for (int i = 0; i < xs.length-1; ++i) {
             double h = xs[i+1] - xs[i];
-            double temp = list.get(i) + h/2 * Math.pow(xs[i], 3) + (3 + v) * Math.pow(xs[i], 2) + 2 * v * xs[i] - list.get(i);
-            list.add( list.get(i) + h * (Math.pow( (xs[i] + xs[i+1]) / 2, 3 ) + (3 + v) * Math.pow( (xs[i] + xs[i+1]) / 2, 2 ) + 2 * v * (xs[i] + xs[i+1]) / 2 - temp));
+            list.add(list.get(i) + h * calcEquation(xs[i]+h/2, (list.get(i) + h/2 * calcEquation(xs[i], list.get(i)))));
         }
         return list;
     }
 
-    //fixme
     public ArrayList<Double> predictorCorrector() {
         ArrayList<Double> euler = methodEuler();
         ArrayList<Double> list = new ArrayList<>();
@@ -43,7 +54,7 @@ public class Cauchy {
 
         for (int i = 0; i < xs.length-1; ++i) {
             double h = xs[i+1] - xs[i];
-            list.add( list.get(i) + h/2 * (Math.pow(xs[i], 3) + (3 + v) * Math.pow(xs[i], 2) + 2 * v * xs[i] - list.get(i) + Math.pow(xs[i+1], 3) + (3 + v) * Math.pow(xs[i+1], 2) + 2 * v * xs[i+1] - euler.get(i)));
+            list.add(list.get(i) + h/2 * ( calcEquation(xs[i], list.get(i)) + calcEquation(xs[i+1], euler.get(i+1))));
         }
 
         return list;

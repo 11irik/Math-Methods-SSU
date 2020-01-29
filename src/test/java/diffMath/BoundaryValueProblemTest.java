@@ -18,12 +18,18 @@ public class BoundaryValueProblemTest {
     @Test
     public void diff() {
         BoundaryValueProblem equation = new BoundaryValueProblem(0.0, 1.0, 10);
-
+        System.out.println("x: " + Arrays.toString(equation.getX()));
+        System.out.println("Method: " + Arrays.toString(equation.differenceMethod()));
+        System.out.println("Exact y: " + Arrays.toString(equation.getYExact()));
         System.out.println("Delta: " + Arrays.toString(getDelta(equation.getYExact(), equation.differenceMethod())));
     }
 
     @Test
-    public void f() {
-
+    public void undetermined() {
+        BoundaryValueProblem equation = new BoundaryValueProblem(0.0, 1.0, 10);
+        System.out.println("x: " + Arrays.toString(equation.getX()));
+        System.out.println("Method: " + Arrays.toString(equation.undeterminedCoefficientsMethod()));
+        System.out.println("Exact y: " + Arrays.toString(equation.getYExact()));
+        System.out.println("Delta: " + Arrays.toString(getDelta(equation.getYExact(), equation.undeterminedCoefficientsMethod())));
     }
 }
