@@ -92,7 +92,7 @@ public class LinearSystem {
     }
 
     //paragraph 1
-    private double diagonalize() {          //also returns determinant
+    public double diagonalize() {          //also returns determinant
         int count = 0;
         double determinant = 1;
 
@@ -153,7 +153,6 @@ public class LinearSystem {
 
     //paragraph 3
     public double[] tridiagonalAlgorithm() {
-        //todo exception
         double[] ps = new double[size-1];
         double[] qs = new double[size];
 

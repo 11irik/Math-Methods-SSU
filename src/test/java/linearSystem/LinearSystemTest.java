@@ -60,6 +60,7 @@ public class LinearSystemTest {
     @Test
     public void gaussianElimination() {
         double[] xs = linearSystem.gaussianElimination();
+        System.out.println(linearSystem.diagonalize());
         System.out.println(Arrays.toString(xs));
 
         double[] actual = linearSystem.getMatrix().multiplyByColumn(xs);;
@@ -71,6 +72,7 @@ public class LinearSystemTest {
 
     @Test
     public void getInverse() {
+        System.out.println(linearSystem.getInverse());
     }
 
     @Test
@@ -80,6 +82,7 @@ public class LinearSystemTest {
         double[] expected = linearSystem.getColumn();
 
         double delta = 0.001;
+        System.out.println(Arrays.toString(xs));
         Assert.assertArrayEquals(expected, actual, delta);
     }
 
@@ -90,6 +93,8 @@ public class LinearSystemTest {
         double[] expected = linearSystem.getColumn();
 
         double delta = 0.1;
+        System.out.println(Arrays.toString(xs));
+
         Assert.assertArrayEquals(expected, actual, delta);
     }
 }

@@ -6,21 +6,23 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Interpolation {
-    private Double[] x = {1.0, 2.0, 3.0, 4.0};
-    private Double[] y = {1.0, 8.0, 27.0, 64.0};
+    private Double[] x;
+    private Double[] y;
+    private int n;
 
     public Interpolation(Double[] x, Double[] y) {
         this.x = Arrays.copyOf(x, x.length);
         this.y = Arrays.copyOf(y, y.length);
+        this.n = x.length;
     }
 
     //paragraph 2
     public void generalForm() {
         for(int i = 0; i < x.length; ++i) {
             for (int j = x.length - 1; j >= 0; j--) {
-                System.out.printf("%-10s", Math.pow(x[i], j) + " ");
+                System.out.printf("%-5s", Math.pow(x[i], j) + " ");
             }
-            System.out.printf("%-10s", "= " + y[i] + '\n');
+            System.out.printf("%-5s", "= " + y[i] + '\n');
         }
     }
 
@@ -49,7 +51,7 @@ public class Interpolation {
     }
 
     //paragraph 4
-    public static double getDifference(double f1, double f2, double x1, double x2) {
+    public double getDifference(double f1, double f2, double x1, double x2) {
         return ((f2 - f1) / (x2 - x1));
     }
 
@@ -93,6 +95,55 @@ public class Interpolation {
     }
 
     //paragraph 5
+    public void splines() {
+        ArrayList<Double> list1 = new ArrayList<>();
+        ArrayList<Double> list2 = new ArrayList<>();
+        double[][] matrix = new double[4*n][4*n];
+        double[] b = new double[n*4];
 
+        int k = 0;
+
+        for (int i = 0; i < 4*n; i += 4, k++) {
+            matrix[k][i] = 1;
+            b[k] = y[k];
+        }
+
+        for (int i = 0, c = 0, r = 1; i < n*4; i+=4, c++, r++, k++) {
+            double h = x[c+1] - x[c];
+            matrix[k][i] = 1;
+            matrix[k][i+1] = h;
+            matrix[k][i+2] = h * h;
+            matrix[k][i+3] = h * h * h;
+            b[k] = y[r];
+        }
+
+        for (int i = 1, c = 0; i+4 < n*4; i+=4, c++, k++) {
+            double h = x[c+1] - x[c];
+            matrix[k][i] = 1;
+            matrix[k][i+1] = 2 * h;
+            matrix[k][i+2] = 3 * h * h;
+            matrix[k][i+4] = -1;
+        }
+
+        for (int i = 2, c = 0; i+4 < n*4; i+=4, c++, k++) {
+            double h = x[c+1] - x[c];
+            matrix[k][i] = 2;
+            matrix[k][i+1] = 6 * h;
+            matrix[k][i+4] = -2;
+        }
+
+        matrix[k][2] = 2;
+        k++;
+        double h = x[n] - x[n-1];
+        matrix[k][n*4-2] = 2;
+        matrix[k][n*4-1] = 6*h;
+        for (int i = 0; i < n*4; ++i) {
+            for (int j = 0; j < n*4; ++j) {
+                System.out.print(matrix[i][j] + " ");
+            }
+            System.out.print("- " + b[i]);
+        }
+        System.out.println("");
+    }
 
 }

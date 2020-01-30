@@ -1,9 +1,7 @@
 package diffMath;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class Cauchy {
     double[] xs;
@@ -22,7 +20,7 @@ public class Cauchy {
         return expected;
     }
 
-    public static double calcEquation(double xk, double yk) {
+    public double f(double xk, double yk) {
         return Math.pow(xk, 3) + (3 + v) * Math.pow(xk, 2) + 2 * v * xk - yk;
     }
 
@@ -31,7 +29,7 @@ public class Cauchy {
         list.add(y0);
         for (int i = 0; i < xs.length-1; ++i) {
             double h = xs[i+1] - xs[i];
-            list.add(list.get(i) + h * calcEquation(xs[i], list.get(i)));
+            list.add(list.get(i) + h * f(xs[i], list.get(i)));
         }
         return list;
     }
@@ -42,7 +40,7 @@ public class Cauchy {
 
         for (int i = 0; i < xs.length-1; ++i) {
             double h = xs[i+1] - xs[i];
-            list.add(list.get(i) + h * calcEquation(xs[i]+h/2, (list.get(i) + h/2 * calcEquation(xs[i], list.get(i)))));
+            list.add(list.get(i) + h * f(xs[i]+h/2, (list.get(i) + h/2 * f(xs[i], list.get(i)))));
         }
         return list;
     }
@@ -54,7 +52,7 @@ public class Cauchy {
 
         for (int i = 0; i < xs.length-1; ++i) {
             double h = xs[i+1] - xs[i];
-            list.add(list.get(i) + h/2 * ( calcEquation(xs[i], list.get(i)) + calcEquation(xs[i+1], euler.get(i+1))));
+            list.add(list.get(i) + h/2 * ( f(xs[i], list.get(i)) + f(xs[i+1], euler.get(i+1))));
         }
 
         return list;

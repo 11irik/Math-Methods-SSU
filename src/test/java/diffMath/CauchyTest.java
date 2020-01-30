@@ -20,9 +20,16 @@ public class CauchyTest {
         double[] xs = new double[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
         Cauchy equation = new Cauchy(xs);
-
+        System.out.println("Expected values");
+        System.out.println(equation.getExpected());
+        System.out.println("\nEuler's method:");
+        System.out.println(equation.methodEuler());;
         System.out.println(getDelta(equation.getExpected(), equation.methodEuler()));
+        System.out.println("Better Euler's method:");
+        System.out.println(equation.betterMethodEuler());;
         System.out.println(getDelta(equation.getExpected(), equation.betterMethodEuler()));
+        System.out.println("Predictor-corrector:");
+        System.out.println(equation.predictorCorrector());
         System.out.println(getDelta(equation.getExpected(), equation.predictorCorrector()));
     }
 }
